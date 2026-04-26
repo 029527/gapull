@@ -1,0 +1,54 @@
+name: Build Docker Tar (amd64 / Release)
+
+on:
+  workflow_dispatch:
+    inputs:
+      images:
+        description: 'Image(s) to fetch, comma-separated  e.g. nginx:latest,redis:7'
+        required: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Pull and compress
+        shell: bash
+        run: |
+          set -euo pipefail
+          IFS=',' read -ra list <<< "${{ inputs.images }}"
+          for raw in "${list[@]}"; do
+            img="${raw// /}"
+            [[ -z "$img" ]] && continue
+            echo "::group::$img"
+            docker pull --platform linux/amd64 "$img"
+            safe="${img//\//_}"; safe="${safe//:/_}"
+            docker save "$img" | gzip > "${safe}-amd64.tar.gz"
+            docker rmi --force "$img"
+            echo "::endgroup::"
+          done
+
+      - name: Publish to release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          TAG="DockerTarBuilder-AMD64"
+          TITLE="AMD64  $(date -u +'%Y-%m-%d %H:%M UTC')"
+          NOTES=$'Load the image:\n```\ndocker load -i <file>.tar.gz\n```'
+          if ! gh release view "$TAG" --repo "$GITHUB_REPOSITORY" &>/dev/null; then
+            gh release create "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE" \
+              --notes "$NOTES" \
+              --latest=false
+          else
+            gh release edit "$TAG" \
+              --repo "$GITHUB_REPOSITORY" \
+              --title "$TITLE"
+          fi
+          gh release upload "$TAG" \
+            --repo "$GITHUB_REPOSITORY" \
+            --clobber \
+            *.tar.gz

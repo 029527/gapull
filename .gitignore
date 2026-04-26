@@ -1,0 +1,24 @@
+# 编译产物
+gapull
+dist/
+
+# Go
+*.test
+*.out
+vendor/
+
+# 下载的镜像包
+*.tar
+*.tar.gz
+*.zip
+
+# 编辑器
+.DS_Store
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# 本地配置
+.env
+.claude/

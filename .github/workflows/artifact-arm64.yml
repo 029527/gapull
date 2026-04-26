@@ -1,0 +1,35 @@
+name: Build Docker Tar (arm64 / Artifact)
+
+on:
+  workflow_dispatch:
+    inputs:
+      images:
+        description: 'Image(s) to fetch, comma-separated  e.g. nginx:latest,redis:7'
+        required: true
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pull and compress
+        shell: bash
+        run: |
+          set -euo pipefail
+          IFS=',' read -ra list <<< "${{ inputs.images }}"
+          for raw in "${list[@]}"; do
+            img="${raw// /}"
+            [[ -z "$img" ]] && continue
+            echo "::group::$img"
+            docker pull --platform linux/arm64 "$img"
+            safe="${img//\//_}"; safe="${safe//:/_}"
+            docker save "$img" | gzip > "${safe}-arm64.tar.gz"
+            docker rmi --force "$img"
+            echo "::endgroup::"
+          done
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: docker-tar-arm64
+          path: '*.tar.gz'
+          retention-days: 1
