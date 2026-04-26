@@ -3,7 +3,6 @@
 > /ˈɡæpʊl/ · *GitHub Actions Pull*
 
 通过 GitHub Actions 在云端拉取 Docker 镜像，打包成 `.tar.gz`，下载到本地离线加载。
-彻底解决国内网络无法直接 `docker pull` 的问题。
 
 ---
 
