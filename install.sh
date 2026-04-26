@@ -51,7 +51,7 @@ echo ""
 # ── 已安装检测 ────────────────────────────────────────────
 INSTALLED_BIN="$(command -v "${BIN}" 2>/dev/null || true)"
 if [[ -n "$INSTALLED_BIN" ]]; then
-  CURRENT_VER="$("${INSTALLED_BIN}" --version 2>/dev/null | head -1 || echo "未知版本")"
+  CURRENT_VER="$("${INSTALLED_BIN}" --version 2>/dev/null | awk '{print $NF}' || echo "未知版本")"
   yellow "检测到已安装的 ${BIN}（${CURRENT_VER}，位于 ${INSTALLED_BIN}）"
   echo ""
   echo "请选择操作："
