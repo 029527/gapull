@@ -49,7 +49,7 @@ GitHub → **Settings** → **Developer settings** → **Personal access tokens*
 ### 第三步：安装 gapull
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/029527/gapull/main/install.sh | bash
+curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/029527/gapull/main/install.sh | bash
 ```
 
 脚本自动检测系统和架构（Linux/macOS × amd64/arm64），下载对应二进制到 `/usr/local/bin`，

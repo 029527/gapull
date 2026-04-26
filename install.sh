@@ -59,7 +59,7 @@ if [[ -n "$INSTALLED_BIN" ]]; then
   echo "  2) 卸载"
   echo "  3) 取消"
   echo ""
-  read -r -p "输入选项 [1/2/3]: " CHOICE
+  read -r -p "输入选项 [1/2/3]: " CHOICE </dev/tty
   case "$CHOICE" in
     1) echo "" && green "开始升级..." ;;
     2)
