@@ -36,7 +36,7 @@ gapull 多线程下载 → docker load
 ## 安装
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/029527/gapull/master/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/029527/gapull/main/install.sh | bash
 ```
 
 脚本自动检测系统和架构（Linux/macOS × amd64/arm64），下载对应二进制到 `/usr/local/bin`，
