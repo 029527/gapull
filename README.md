@@ -102,7 +102,7 @@ gapull pull nginx:latest
 |---|---|---|
 | < 2 GB | `release`（默认） | 上传到 GitHub Release，下载无需认证 |
 | 2 ~ 5 GB | `artifact` | 上传到 Actions Artifact，有效期 1 天 |
-| > 5 GB | ❌ 不支持 | 请自行解决网络问题 |
+| > 5 GB | ❌ 不支持 | 文件体积超限 |
 
 支持架构：`amd64`（x86-64）、`arm64`（树莓派 4 等）、`arm32`（树莓派 3 等）。
 
