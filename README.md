@@ -33,7 +33,20 @@ gapull 多线程下载 → docker load
 
 ---
 
-## 安装
+## 快速开始
+
+> **使用前必读：** gapull 通过触发你自己仓库里的 GitHub Actions 来拉取镜像，因此你必须先 **fork** 本仓库，再配置 Token，才能正常使用。
+
+### 第一步：Fork 仓库
+
+点击页面右上角的 **Fork** 按钮，将本仓库 fork 到你自己的 GitHub 账号下。
+
+### 第二步：生成 GitHub Token
+
+GitHub → **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)**
+→ Generate new token → 勾选 `workflow` 权限 → 复制生成的 Token。
+
+### 第三步：安装 gapull
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/029527/gapull/main/install.sh | bash
@@ -45,23 +58,13 @@ curl -fsSL https://raw.githubusercontent.com/029527/gapull/main/install.sh | bas
 **手动安装**：前往 [Releases](https://github.com/029527/gapull/releases/latest) 下载对应平台的二进制，
 重命名为 `gapull` 并放入 `$PATH` 即可。
 
----
-
-## 配置
-
-安装完成后，配置一次 GitHub Token（需要 `workflow` 权限）：
+### 第四步：配置 Token 和 fork 信息
 
 ```bash
-gapull config set --token ghp_xxxxxxxxxxxxxxxx
+gapull config set --token ghp_xxxxxxxxxxxxxxxx --owner your-github-username --repo gapull
 ```
 
-获取 Token：GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → 勾选 `workflow`
-
-如果使用自己 fork 的仓库：
-
-```bash
-gapull config set --token ghp_xxx --owner your-name --repo gapull
-```
+> `--owner` 填你自己的 GitHub 用户名，`--repo` 填 fork 后的仓库名（默认是 `gapull`）。
 
 ---
 

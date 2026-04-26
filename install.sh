@@ -27,9 +27,25 @@ case "$(uname -m)" in
 esac
 
 ASSET="${BIN}-${OS}-${ARCH}"
+
+# ── 获取最新版本号 ─────────────────────────────────────────
+LATEST_TAG=""
+if command -v curl &>/dev/null; then
+  LATEST_TAG=$(curl -fsSLI -o /dev/null -w '%{url_effective}' \
+    "https://github.com/${REPO}/releases/latest" 2>/dev/null \
+    | sed 's|.*/tag/||')
+elif command -v wget &>/dev/null; then
+  LATEST_TAG=$(wget -q --server-response --spider \
+    "https://github.com/${REPO}/releases/latest" 2>&1 \
+    | grep -i "Location:" | tail -1 | sed 's|.*/tag/||' | tr -d '[:space:]')
+fi
+
 URL="https://github.com/${REPO}/releases/latest/download/${ASSET}"
 
 echo "检测到: ${OS}/${ARCH}"
+if [[ -n "${LATEST_TAG}" ]]; then
+  green "最新版本: ${LATEST_TAG}"
+fi
 echo "下载: ${URL}"
 echo ""
 
