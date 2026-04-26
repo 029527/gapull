@@ -73,9 +73,7 @@ if [[ -n "$INSTALLED_BIN" ]]; then
       for rc in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.config/fish/config.fish"; do
         [[ -f "$rc" ]] || continue
         if grep -qF "gapull" "$rc" 2>/dev/null; then
-          # 删除 alias 行和上方的注释行
-          sed -i.bak '/# gapull shortcut/{N;d}' "$rc" && rm -f "${rc}.bak"
-          sed -i.bak "/alias dp[= ].*gapull/d" "$rc" && rm -f "${rc}.bak"
+          grep -vE "^# gapull shortcut$|^alias dp.+gapull" "$rc" > "${rc}.tmp" && mv "${rc}.tmp" "$rc"
           yellow "已清理 alias → ${rc}"
         fi
       done
