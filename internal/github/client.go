@@ -85,7 +85,7 @@ func (c *Client) Trigger(ctx context.Context, images string, arch Arch, wt Workf
 	}
 
 	event := gh.CreateWorkflowDispatchEventRequest{
-		Ref:    "master",
+		Ref:    "main",
 		Inputs: map[string]interface{}{"images": images},
 	}
 
