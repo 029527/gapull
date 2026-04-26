@@ -46,6 +46,49 @@ echo "检测到: ${OS}/${ARCH}"
 if [[ -n "${LATEST_TAG}" ]]; then
   green "最新版本: ${LATEST_TAG}"
 fi
+echo ""
+
+# ── 已安装检测 ────────────────────────────────────────────
+INSTALLED_BIN="$(command -v "${BIN}" 2>/dev/null || true)"
+if [[ -n "$INSTALLED_BIN" ]]; then
+  CURRENT_VER="$("${INSTALLED_BIN}" --version 2>/dev/null | head -1 || echo "未知版本")"
+  yellow "检测到已安装的 ${BIN}（${CURRENT_VER}，位于 ${INSTALLED_BIN}）"
+  echo ""
+  echo "请选择操作："
+  echo "  1) 升级到最新版本${LATEST_TAG:+（${LATEST_TAG}）}"
+  echo "  2) 卸载"
+  echo "  3) 取消"
+  echo ""
+  read -r -p "输入选项 [1/2/3]: " CHOICE
+  case "$CHOICE" in
+    1) echo "" && green "开始升级..." ;;
+    2)
+      echo ""
+      if [[ -w "$(dirname "$INSTALLED_BIN")" ]]; then
+        rm -f "$INSTALLED_BIN"
+      else
+        sudo rm -f "$INSTALLED_BIN"
+      fi
+      # 清理 alias
+      for rc in "$HOME/.zshrc" "$HOME/.bashrc" "$HOME/.bash_profile" "$HOME/.config/fish/config.fish"; do
+        [[ -f "$rc" ]] || continue
+        if grep -qF "gapull" "$rc" 2>/dev/null; then
+          # 删除 alias 行和上方的注释行
+          sed -i.bak '/# gapull shortcut/{N;d}' "$rc" && rm -f "${rc}.bak"
+          sed -i.bak "/alias dp[= ].*gapull/d" "$rc" && rm -f "${rc}.bak"
+          yellow "已清理 alias → ${rc}"
+        fi
+      done
+      green "${BIN} 已卸载。"
+      exit 0
+      ;;
+    *)
+      yellow "已取消。"
+      exit 0
+      ;;
+  esac
+fi
+
 echo "下载: ${URL}"
 echo ""
 
