@@ -1,9 +1,11 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/029527/gapull/internal/config"
+	"github.com/029527/gapull/internal/github"
 	"github.com/spf13/cobra"
 )
 
@@ -31,6 +33,17 @@ var configSetCmd = &cobra.Command{
 		}
 		if flagOwner != "" {
 			cfg.Owner = flagOwner
+		} else if flagToken != "" {
+			// 未显式指定 owner，根据 token 自动查询归属账号
+			fmt.Println("正在通过 Token 获取 GitHub 用户名...")
+			client := github.NewClientWithToken(cfg.Token)
+			login, err := client.GetAuthenticatedUser(context.Background())
+			if err != nil {
+				fmt.Printf("警告: 无法自动获取 GitHub 用户名（%v），请手动指定 --owner\n", err)
+			} else {
+				cfg.Owner = login
+				fmt.Printf("自动设置 owner 为: %s\n", login)
+			}
 		}
 		if flagRepo != "" {
 			cfg.Repo = flagRepo

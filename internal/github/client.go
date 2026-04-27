@@ -69,6 +69,22 @@ func NewClient(token, owner, repo string) *Client {
 	}
 }
 
+// NewClientWithToken 仅凭 token 创建客户端（owner/repo 暂不需要）
+func NewClientWithToken(token string) *Client {
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: token})
+	tc := oauth2.NewClient(context.Background(), ts)
+	return &Client{gh: gh.NewClient(tc)}
+}
+
+// GetAuthenticatedUser 返回 token 归属的 GitHub 用户名
+func (c *Client) GetAuthenticatedUser(ctx context.Context) (string, error) {
+	user, _, err := c.gh.Users.Get(ctx, "")
+	if err != nil {
+		return "", fmt.Errorf("获取 GitHub 用户信息失败: %w", err)
+	}
+	return user.GetLogin(), nil
+}
+
 // TriggerResult 触发后的上下文信息
 type TriggerResult struct {
 	WorkflowFile string

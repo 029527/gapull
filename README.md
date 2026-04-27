@@ -40,6 +40,10 @@ gapull 多线程下载 → docker load
 
 点击页面右上角的 **Fork** 按钮，将本仓库 fork 到你自己的 GitHub 账号下。
 
+Fork 完成后，**必须手动开启 Actions**：进入你 fork 后的仓库 → 点击顶部 **Actions** 标签页 → 页面会提示
+"Workflows aren't being run on this forked repository"，点击 **I understand my workflows, go ahead and enable them** 按钮。
+不操作此步骤将无法触发任何 workflow。
+
 ### 第二步：生成 GitHub Token
 
 GitHub → **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)**
@@ -60,10 +64,17 @@ curl -fsSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/029527
 ### 第四步：配置 Token 和 fork 信息
 
 ```bash
-gapull config set --token ghp_xxxxxxxxxxxxxxxx --owner your-github-username --repo gapull
+gapull config set --token ghp_xxxxxxxxxxxxxxxx
 ```
 
-> `--owner` 填你自己的 GitHub 用户名，`--repo` 填 fork 后的仓库名（默认是 `gapull`）。
+工具会自动通过 Token 查询你的 GitHub 用户名并设置为 `owner`。
+若 fork 时修改了仓库名，需额外指定 `--repo`：
+
+```bash
+gapull config set --token ghp_xxxxxxxxxxxxxxxx --repo my-repo-name
+```
+
+> 也可手动指定 `--owner your-github-username` 覆盖自动检测结果。
 
 ---
 
